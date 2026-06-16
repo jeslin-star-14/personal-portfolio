@@ -23,22 +23,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ===== CSS VARIABLES ===== */
+    /* ===== CSS VARIABLES (Light/Dark dynamic) ===== */
     :root {
       --bg: #080808;
       --surface: #111111;
       --surface2: #181818;
+      --surface3: #222;
       --border: #2a2a2a;
       --accent: #e8ff47;
       --accent2: #ff4747;
       --text: #f0f0f0;
       --text-muted: #888;
+      --text-light: #aaa;
+      --shadow: 0 20px 60px rgba(0,0,0,.6);
+      --glow: rgba(232,255,71,.07);
       --font-display: 'Bebas Neue', sans-serif;
       --font-mono: 'Space Mono', monospace;
       --font-body: 'DM Sans', sans-serif;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ===== RESET ===== */
+    /* Light theme overrides */
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --surface2: #f0f0f0;
+      --surface3: #e0e0e0;
+      --border: #d0d0d0;
+      --text: #1a1a1a;
+      --text-muted: #555;
+      --text-light: #777;
+      --shadow: 0 20px 60px rgba(0,0,0,.1);
+      --glow: rgba(232,255,71,.25);
+    }
+
+    /* ===== RESET & BASE ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; font-size: 16px; }
     body {
@@ -47,12 +66,13 @@
       font-family: var(--font-body);
       line-height: 1.6;
       overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
     }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
 
-    /* ===== SKIP LINK (accessibility) ===== */
+    /* ===== SKIP LINK ===== */
     .skip-link {
       position: absolute;
       top: -999px;
@@ -63,6 +83,7 @@
       font-weight: 700;
       z-index: 9999;
       border-radius: 0 0 8px 0;
+      transition: top 0.2s;
     }
     .skip-link:focus { top: 0; }
 
@@ -74,36 +95,43 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 0;
-      opacity: .4;
+      opacity: 0.5;
+      mix-blend-mode: overlay;
     }
 
-    /* ===== HEADER / NAV ===== */
+    /* ===== HEADER / NAV (Flexbox) ===== */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(8,8,8,.85);
-      backdrop-filter: blur(12px);
+      background: rgba(8,8,8,.8);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
       border-bottom: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    [data-theme="light"] header {
+      background: rgba(255,255,255,.85);
     }
     nav {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 2rem;
-      height: 64px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
     .nav-logo {
       font-family: var(--font-display);
-      font-size: 1.8rem;
+      font-size: 2rem;
       letter-spacing: 2px;
       color: var(--accent);
+      transition: color var(--transition);
     }
     .nav-links {
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       align-items: center;
     }
     .nav-links a {
@@ -112,22 +140,43 @@
       color: var(--text-muted);
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: color .2s;
+      transition: color var(--transition);
       position: relative;
+      padding: 4px 0;
     }
     .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -4px; left: 0;
+      bottom: -2px; left: 0;
       width: 0; height: 2px;
       background: var(--accent);
-      transition: width .25s;
+      transition: width .3s ease;
     }
     .nav-links a:hover,
     .nav-links a:focus { color: var(--accent); outline: none; }
     .nav-links a:hover::after,
     .nav-links a:focus::after { width: 100%; }
-    .nav-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .4rem .7rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: scale(1.05);
+    }
 
     /* Hamburger (mobile) */
     .nav-toggle {
@@ -135,13 +184,18 @@
       background: none;
       border: 1px solid var(--border);
       color: var(--text);
-      padding: .4rem .7rem;
+      padding: .4rem .8rem;
       cursor: pointer;
       border-radius: 4px;
       font-size: 1.2rem;
+      transition: all var(--transition);
+    }
+    .nav-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
-    /* ===== HERO ===== */
+    /* ===== HERO (Grid + Flex) ===== */
     #hero {
       min-height: 100vh;
       display: flex;
@@ -163,9 +217,10 @@
       position: absolute;
       top: 20%; left: -10%;
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(232,255,71,.07) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
       z-index: 0;
       animation: pulse 6s ease-in-out infinite;
+      transition: background var(--transition);
     }
     @keyframes pulse {
       0%,100% { transform: scale(1); opacity: .7; }
@@ -177,6 +232,9 @@
       max-width: 1200px;
       margin: 0 auto;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
     .hero-tag {
       display: inline-flex;
@@ -190,8 +248,9 @@
       border: 1px solid rgba(232,255,71,.3);
       padding: .35rem .9rem;
       border-radius: 999px;
-      margin-bottom: 2rem;
+      width: fit-content;
       animation: fadeUp .6s ease both;
+      transition: border var(--transition);
     }
     .hero-tag::before {
       content: '';
@@ -207,7 +266,7 @@
     }
     .hero-name {
       font-family: var(--font-display);
-      font-size: clamp(5rem, 14vw, 11rem);
+      font-size: clamp(4.5rem, 14vw, 11rem);
       line-height: .9;
       letter-spacing: -2px;
       color: var(--text);
@@ -218,7 +277,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: .75rem;
-      margin: 2rem 0;
+      margin: 1rem 0;
       animation: fadeUp .7s .2s ease both;
     }
     .role-badge {
@@ -231,15 +290,15 @@
       border-radius: 4px;
       color: var(--text-muted);
       background: var(--surface);
-      transition: all .2s;
+      transition: all var(--transition);
     }
-    .role-badge:hover { border-color: var(--accent); color: var(--accent); }
+    .role-badge:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
     .hero-bio {
       max-width: 560px;
       font-size: 1.05rem;
       color: var(--text-muted);
       line-height: 1.8;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
       animation: fadeUp .7s .3s ease both;
     }
     .hero-bio strong { color: var(--accent); font-weight: 500; }
@@ -264,7 +323,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
+      transition: transform .2s, box-shadow .2s, background var(--transition);
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232,255,71,.3); }
     .btn-primary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
@@ -282,10 +341,9 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       cursor: pointer;
-      transition: all .2s;
+      transition: all var(--transition);
     }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-    .btn-outline:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,.05); }
 
     /* Scroll indicator */
     .scroll-hint {
@@ -347,10 +405,11 @@
       line-height: 1;
       letter-spacing: 1px;
       margin-bottom: 3rem;
+      color: var(--text);
     }
 
-    /* ===== ABOUT ===== */
-    #about { background: var(--surface); }
+    /* ===== ABOUT (Grid) ===== */
+    #about { background: var(--surface); transition: background var(--transition); }
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -359,20 +418,22 @@
     }
     .about-visual {
       position: relative;
+      display: flex;
+      justify-content: center;
     }
     .about-avatar-wrap {
       width: 100%;
-      aspect-ratio: 1;
       max-width: 400px;
+      aspect-ratio: 1;
       position: relative;
-      margin: 0 auto;
     }
     .about-avatar-bg {
       position: absolute;
       inset: 0;
       background: linear-gradient(135deg, var(--accent) 0%, rgba(232,255,71,.1) 100%);
       border-radius: 12px;
-      transform: rotate(3deg);
+      transform: rotate(4deg);
+      transition: all var(--transition);
     }
     .about-avatar {
       position: relative;
@@ -385,6 +446,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      transition: border var(--transition);
     }
     .avatar-initials {
       font-family: var(--font-display);
@@ -397,6 +459,7 @@
     .avatar-icon {
       position: absolute;
       font-size: 5rem;
+      opacity: .6;
     }
     .about-badge {
       position: absolute;
@@ -410,6 +473,7 @@
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 1px;
+      transition: all var(--transition);
     }
     .about-text p {
       color: var(--text-muted);
@@ -430,6 +494,11 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1.2rem .8rem;
+      transition: all var(--transition);
+    }
+    .stat-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
     }
     .stat-num {
       font-family: var(--font-display);
@@ -446,8 +515,8 @@
       margin-top: .3rem;
     }
 
-    /* ===== SKILLS ===== */
-    #skills { background: var(--bg); }
+    /* ===== SKILLS (Grid) ===== */
+    #skills { background: var(--bg); transition: background var(--transition); }
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -458,7 +527,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.8rem;
-      transition: transform .25s, border-color .25s;
+      transition: all var(--transition);
       position: relative;
       overflow: hidden;
     }
@@ -470,19 +539,17 @@
       background: var(--accent);
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform .3s;
+      transition: transform .4s ease;
     }
-    .skill-card:hover { transform: translateY(-4px); border-color: rgba(232,255,71,.3); }
+    .skill-card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
     .skill-card:hover::before { transform: scaleX(1); }
-    .skill-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
+    .skill-icon { font-size: 2.2rem; margin-bottom: 1rem; }
     .skill-name {
       font-family: var(--font-display);
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       letter-spacing: 1px;
       margin-bottom: .5rem;
+      color: var(--text);
     }
     .skill-tags {
       display: flex;
@@ -498,25 +565,27 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       color: var(--text-muted);
+      transition: all var(--transition);
     }
+    .skill-card:hover .skill-tag { border-color: rgba(232,255,71,.3); color: var(--text); }
 
-    /* ===== PROJECTS ===== */
-    #projects { background: var(--surface); }
+    /* ===== PROJECTS (Grid) ===== */
+    #projects { background: var(--surface); transition: background var(--transition); }
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.8rem;
     }
     .project-card {
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
-      transition: transform .25s, box-shadow .25s;
+      transition: all var(--transition);
       display: flex;
       flex-direction: column;
     }
-    .project-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+    .project-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); border-color: var(--accent); }
     .project-thumb {
       height: 180px;
       display: flex;
@@ -525,7 +594,9 @@
       font-size: 4rem;
       position: relative;
       overflow: hidden;
+      transition: transform .4s;
     }
+    .project-card:hover .project-thumb { transform: scale(1.02); }
     .project-thumb::after {
       content: '';
       position: absolute;
@@ -545,6 +616,7 @@
       font-size: 1.6rem;
       letter-spacing: 1px;
       margin-bottom: .75rem;
+      color: var(--text);
     }
     .project-desc {
       color: var(--text-muted);
@@ -562,15 +634,20 @@
       font-family: var(--font-mono);
       font-size: .63rem;
       letter-spacing: .5px;
-      padding: .2rem .6rem;
+      padding: .25rem .7rem;
       background: rgba(232,255,71,.08);
       border: 1px solid rgba(232,255,71,.2);
       border-radius: 4px;
       color: var(--accent);
+      transition: all var(--transition);
+    }
+    .project-card:hover .stack-tag {
+      background: rgba(232,255,71,.15);
+      border-color: var(--accent);
     }
 
-    /* ===== CONTACT ===== */
-    #contact { background: var(--bg); }
+    /* ===== CONTACT (Grid) ===== */
+    #contact { background: var(--bg); transition: background var(--transition); }
     .contact-wrap {
       display: grid;
       grid-template-columns: 1fr 1.2fr;
@@ -582,6 +659,7 @@
       font-size: 2.5rem;
       margin-bottom: 1rem;
       line-height: 1.1;
+      color: var(--text);
     }
     .contact-info p { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
     .contact-links { display: flex; flex-direction: column; gap: 1rem; }
@@ -593,13 +671,13 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      transition: all .2s;
+      transition: all var(--transition);
       font-family: var(--font-mono);
       font-size: .82rem;
+      color: var(--text-muted);
     }
-    .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
-    .contact-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    .contact-link-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateX(6px); background: var(--surface2); }
+    .contact-link-icon { font-size: 1.2rem; width: 28px; text-align: center; }
 
     /* Contact form */
     .contact-form-wrap {
@@ -607,10 +685,9 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 2.5rem;
+      transition: all var(--transition);
     }
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
+    .form-group { margin-bottom: 1.5rem; }
     .form-label {
       display: block;
       font-family: var(--font-mono);
@@ -638,12 +715,12 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(232,255,71,.15);
     }
-    .form-control::placeholder { color: #444; }
+    .form-control::placeholder { color: #555; }
     textarea.form-control { resize: vertical; min-height: 140px; }
     .form-status {
       font-family: var(--font-mono);
       font-size: .8rem;
-      margin-top: .75rem;
+      margin-top: .5rem;
       min-height: 1.4em;
     }
     .form-status.success { color: var(--accent); }
@@ -659,47 +736,72 @@
       font-size: .72rem;
       color: var(--text-muted);
       letter-spacing: 1px;
+      transition: all var(--transition);
     }
     footer a { color: var(--accent); transition: opacity .2s; }
     footer a:hover { opacity: .7; }
-    footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== RESPONSIVE (Mobile-first) ===== */
     @media (max-width: 900px) {
-      .about-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
       .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
       .about-avatar-wrap { max-width: 280px; }
+      .hero-name { font-size: clamp(3.8rem, 14vw, 6rem); }
     }
     @media (max-width: 700px) {
-      .nav-links { display: none; }
-      .nav-links.open {
-        display: flex;
+      .nav-links {
+        display: none;
         flex-direction: column;
         position: absolute;
-        top: 64px; left: 0; right: 0;
+        top: 70px; left: 0; right: 0;
         background: var(--surface);
         border-bottom: 1px solid var(--border);
         padding: 1.5rem 2rem;
         gap: 1.5rem;
+        backdrop-filter: blur(12px);
+        transition: all var(--transition);
       }
+      .nav-links.open { display: flex; }
       .nav-toggle { display: block; }
-      .hero-name { font-size: clamp(3.5rem, 17vw, 5.5rem); }
+      .hero-name { font-size: clamp(3rem, 17vw, 4.5rem); }
       .about-stats { grid-template-columns: 1fr 1fr; }
+      .section-inner { padding: 70px 1.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .contact-form-wrap { padding: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-cta { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-outline { justify-content: center; }
+      .hero-roles { gap: .4rem; }
+      .role-badge { font-size: .6rem; padding: .3rem .7rem; }
+      .about-stats { grid-template-columns: 1fr; }
+      .stat-item { padding: .8rem; }
     }
 
-    /* ===== FOCUS-VISIBLE global ===== */
+    /* ===== FOCUS-VISIBLE ===== */
     *:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
     /* ===== REDUCED MOTION ===== */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
+
+    /* ===== UTILITY ===== */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Skip navigation for screen readers -->
+  <!-- Skip navigation -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ===== HEADER ===== -->
@@ -712,6 +814,11 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li>
+          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
+            <span id="theme-icon">🌙</span>
+          </button>
+        </li>
       </ul>
     </nav>
   </header>
@@ -797,7 +904,6 @@
         <p class="section-label" aria-hidden="true">02 — Skills</p>
         <h2 id="skills-heading" class="section-title">What I<br>Do</h2>
         <div class="skills-grid" role="list" aria-label="Skill categories">
-
           <article class="skill-card" role="listitem" aria-label="UI/UX Design skill">
             <div class="skill-icon" aria-hidden="true">🎨</div>
             <h3 class="skill-name">UI/UX Design</h3>
@@ -870,7 +976,6 @@
               <li class="skill-tag">ERD Design</li>
             </ul>
           </article>
-
         </div>
       </div>
     </section>
@@ -881,7 +986,6 @@
         <p class="section-label" aria-hidden="true">03 — Projects</p>
         <h2 id="projects-heading" class="section-title">Things I've<br>Built</h2>
         <div class="projects-grid" role="list" aria-label="Portfolio projects">
-
           <article class="project-card" role="listitem" aria-label="Project: Ark Kitchen">
             <div class="project-thumb" style="background:linear-gradient(135deg,#1a1a00,#2d2d00);" aria-hidden="true">🍳</div>
             <div class="project-body">
@@ -956,7 +1060,6 @@
               </ul>
             </div>
           </article>
-
         </div>
       </div>
     </section>
@@ -967,7 +1070,6 @@
         <p class="section-label" aria-hidden="true">04 — Contact</p>
         <h2 id="contact-heading" class="section-title">Let's<br>Connect</h2>
         <div class="contact-wrap">
-
           <div class="contact-info">
             <h3>Got a project idea or want to collaborate?</h3>
             <p>I'm always open to freelance work, open-source collaboration, and creative conversations. Drop me a message — I typically respond within 24 hours.</p>
@@ -996,78 +1098,32 @@
           </div>
 
           <div class="contact-form-wrap">
-            <form
-              id="contact-form"
-              aria-label="Contact form"
-              novalidate
-              onsubmit="handleFormSubmit(event)"
-            >
+            <form id="contact-form" aria-label="Contact form" novalidate onsubmit="handleFormSubmit(event)">
               <div class="form-group">
                 <label class="form-label" for="name">Your Name <span aria-label="required">*</span></label>
-                <input
-                  class="form-control"
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="e.g. Jane Smith"
-                  required
-                  autocomplete="name"
-                  aria-required="true"
-                  aria-describedby="name-error"
-                />
+                <input class="form-control" type="text" id="name" name="name" placeholder="e.g. Jane Smith" required autocomplete="name" aria-required="true" aria-describedby="name-error" />
                 <span id="name-error" class="form-status error" role="alert" aria-live="polite"></span>
               </div>
-
               <div class="form-group">
                 <label class="form-label" for="email">Email Address <span aria-label="required">*</span></label>
-                <input
-                  class="form-control"
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="e.g. jane@example.com"
-                  required
-                  autocomplete="email"
-                  aria-required="true"
-                  aria-describedby="email-error"
-                />
+                <input class="form-control" type="email" id="email" name="email" placeholder="e.g. jane@example.com" required autocomplete="email" aria-required="true" aria-describedby="email-error" />
                 <span id="email-error" class="form-status error" role="alert" aria-live="polite"></span>
               </div>
-
               <div class="form-group">
                 <label class="form-label" for="subject">Subject</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  placeholder="e.g. Freelance Project"
-                  autocomplete="off"
-                />
+                <input class="form-control" type="text" id="subject" name="subject" placeholder="e.g. Freelance Project" autocomplete="off" />
               </div>
-
               <div class="form-group">
                 <label class="form-label" for="message">Message <span aria-label="required">*</span></label>
-                <textarea
-                  class="form-control"
-                  id="message"
-                  name="message"
-                  placeholder="Tell me about your project or idea..."
-                  required
-                  aria-required="true"
-                  aria-describedby="message-error"
-                ></textarea>
+                <textarea class="form-control" id="message" name="message" placeholder="Tell me about your project or idea..." required aria-required="true" aria-describedby="message-error"></textarea>
                 <span id="message-error" class="form-status error" role="alert" aria-live="polite"></span>
               </div>
-
               <button type="submit" class="btn-primary" style="width:100%;justify-content:center;" aria-label="Send message">
                 Send Message →
               </button>
-
               <div id="form-success" class="form-status success" role="status" aria-live="polite" aria-atomic="true" style="text-align:center;margin-top:1rem;"></div>
             </form>
           </div>
-
         </div>
       </div>
     </section>
@@ -1096,7 +1152,6 @@
       toggle.setAttribute('aria-expanded', open);
       toggle.textContent = open ? '✕' : '☰';
     });
-    // Close nav on link click
     navLinks.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         navLinks.classList.remove('open');
@@ -1105,18 +1160,31 @@
       });
     });
 
+    // ===== THEME TOGGLE =====
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    let currentTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    themeIcon.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+
+    themeToggle.addEventListener('click', () => {
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      themeIcon.textContent = newTheme === 'light' ? '☀️' : '🌙';
+      currentTheme = newTheme;
+    });
+
     // ===== FORM VALIDATION & SUBMIT =====
     function handleFormSubmit(e) {
       e.preventDefault();
       const form = e.target;
       let valid = true;
-
       const fields = [
         { id: 'name',    errId: 'name-error',    msg: 'Please enter your name.' },
         { id: 'email',   errId: 'email-error',   msg: 'Please enter a valid email address.', isEmail: true },
         { id: 'message', errId: 'message-error', msg: 'Please enter a message.' },
       ];
-
       fields.forEach(f => {
         const el = document.getElementById(f.id);
         const err = document.getElementById(f.errId);
@@ -1132,14 +1200,12 @@
           el.style.borderColor = '';
         }
       });
-
       if (valid) {
         const btn = form.querySelector('button[type="submit"]');
         btn.textContent = 'Sending...';
         btn.disabled = true;
         setTimeout(() => {
-          document.getElementById('form-success').textContent =
-            'Message sent! I will get back to you within 24 hours.';
+          document.getElementById('form-success').textContent = 'Message sent! I will get back to you within 24 hours.';
           form.reset();
           btn.innerHTML = '<span>Send Message →</span>';
           btn.disabled = false;
@@ -1147,9 +1213,9 @@
       }
     }
 
-    // ===== ACTIVE NAV HIGHLIGHT on scroll =====
+    // ===== ACTIVE NAV HIGHLIGHT =====
     const sections = document.querySelectorAll('section[id]');
-    const navAs = document.querySelectorAll('.nav-links a');
+    const navAs = document.querySelectorAll('.nav-links a:not(.theme-toggle)');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
