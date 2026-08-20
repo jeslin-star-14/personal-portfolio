@@ -1,1 +1,15 @@
+/* Hide default cursor globally */
+* {
+  cursor: none !important;
+  box-sizing: border-box;
+}
 
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #05050a; /* Deep space black */
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
