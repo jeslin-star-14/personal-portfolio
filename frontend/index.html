@@ -36,6 +36,7 @@
 
   <!-- ============ HERO ============ -->
   <section id="hero" class="hero">
+    <div class="hero__profile reveal"><img id="profile-image" alt="Jeslin J. P." /></div>
     <p class="mono eyebrow reveal">SYSTEM ONLINE // COORDINATES: CHENNAI, IN</p>
     <h1 class="hero__title reveal">
       Jeslin J. P.
@@ -199,11 +200,8 @@
   <section id="certifications" class="section">
     <p class="mono eyebrow reveal">05 // CERTIFICATIONS</p>
     <h2 class="section__title reveal">Verified transmissions.</h2>
-    <div class="certs reveal">
-      <div class="cert">Red Hat Linux Certification</div>
-      <div class="cert">Google Cloud Digital Leader</div>
-      <div class="cert">Cisco — Introduction to Cybersecurity</div>
-      <div class="cert">Cisco — HTML, CSS, JavaScript &amp; Python</div>
+    <div id="certifications-list" class="certs reveal">
+      <div class="cert">Loading certifications...</div>
     </div>
   </section>
 
@@ -212,8 +210,7 @@
     <p class="mono eyebrow reveal">06 // UPLINK</p>
     <h2 class="section__title reveal">Open a channel.</h2>
     <p class="section__text reveal">
-      Send a message, or transmit a file (brief, spec, resume request — whatever
-      you've got). Files are stored on the server and logged to SQLite.
+      Send a message directly to my inbox.
     </p>
 
     <div class="uplink__grid">
@@ -236,23 +233,9 @@
         <p class="form-status mono" id="contact-status" role="status"></p>
       </form>
 
-      <!-- File upload -->
-      <div class="panel reveal">
-        <p class="mono panel__label">file.upload()</p>
-        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a file">
-          <div class="dropzone__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48" width="40" height="40">
-              <path d="M24 6 L24 30 M14 16 L24 6 L34 16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8 32 L8 38 A2 2 0 0 0 10 40 L38 40 A2 2 0 0 0 40 38 L40 32" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <p>Drop a file here, or <span class="dropzone__browse">browse</span></p>
-          <p class="mono dropzone__hint">max 15MB — logged to SQLite</p>
-          <input type="file" id="file-input" hidden />
-        </div>
-        <p class="form-status mono" id="upload-status" role="status"></p>
-
-        <div id="file-list" class="file-list" aria-live="polite"></div>
+      <div id="public-work" class="panel reveal">
+        <p class="mono panel__label">latest.transmissions()</p>
+        <div id="public-files" class="file-list" aria-live="polite"></div>
       </div>
     </div>
   </section>
@@ -263,6 +246,7 @@
   <p>&copy; <span id="year"></span> Jeslin J. P. — built with HTML, CSS, JS &amp; a little gravity.</p>
   <div class="footer__links">
     <a href="mailto:jeslin3379@gmail.com">Email</a>
+    <a href="/admin.html">Admin</a>
     <a href="tel:+917538805407">Phone</a>
     <a href="https://linkedin.com/in/jeslin-jp-9652b8371" target="_blank" rel="noopener">LinkedIn</a>
     <a href="https://github.com/jeslin-star-14" target="_blank" rel="noopener">GitHub</a>

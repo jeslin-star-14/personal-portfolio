@@ -405,6 +405,9 @@ a { color: inherit; text-decoration: none; }
   background: var(--panel);
   transition: border-color 0.2s ease;
 }
+.cert strong, .cert span { display: block; }
+.cert span { color: var(--dust); font-size: 0.78rem; margin-top: 0.35rem; }
+.cert a { color: var(--cyan); display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; margin-top: 0.55rem; }
 .cert:hover { border-color: var(--cyan); }
 
 /* =========================================================
@@ -483,10 +486,34 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.82rem;
 }
 .file-item__name { font-family: var(--font-mono); color: var(--star); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-item small { display: block; color: var(--dust); margin-top: 0.25rem; }
 .file-item__meta { color: var(--dust); font-family: var(--font-mono); font-size: 0.72rem; flex-shrink: 0; }
 .file-item__delete {
   background: none; border: none; color: var(--pink); cursor: pointer; font-family: var(--font-mono); font-size: 0.72rem;
 }
+
+.hero__profile {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 1.5rem;
+  border: 1px solid var(--cyan);
+  border-radius: 50%;
+  background: var(--panel);
+  overflow: hidden;
+  opacity: 0.75;
+}
+.hero__profile img { display: none; width: 100%; height: 100%; object-fit: cover; }
+.hero__profile img.is-loaded { display: block; }
+.admin-main { max-width: 980px; margin: 0 auto; padding: 7rem clamp(1.25rem, 6vw, 3rem) 4rem; }
+.admin-header { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 2rem; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.admin-list { margin-top: 1rem; display: grid; gap: 0.65rem; }
+.admin-list .file-item { align-items: start; }
+.admin-list button { color: var(--pink); background: none; border: 0; cursor: pointer; font-family: var(--font-mono); }
+.admin-hidden { display: none; }
+.admin-login { max-width: 420px; margin: 12vh auto; padding: 0 1.25rem; }
+.admin-login .panel { margin-top: 1.5rem; }
+.admin-note { color: var(--dust); font-size: 0.78rem; line-height: 1.6; }
 
 /* =========================================================
    FOOTER
@@ -509,6 +536,7 @@ a { color: inherit; text-decoration: none; }
    ========================================================= */
 @media (max-width: 860px) {
   .about__grid, .uplink__grid { grid-template-columns: 1fr; }
+  .admin-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {

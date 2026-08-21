@@ -16,6 +16,9 @@ db.exec(`
     stored_name   TEXT NOT NULL,
     mime_type     TEXT,
     size_bytes    INTEGER,
+    category      TEXT NOT NULL DEFAULT 'other',
+    title         TEXT,
+    description   TEXT,
     uploaded_at   TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -26,6 +29,24 @@ db.exec(`
     message     TEXT NOT NULL,
     received_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT
+  );
 `);
+
+// Keep existing portfolio databases compatible when new upload metadata is added.
+for (const column of [
+  ["category", "TEXT NOT NULL DEFAULT 'other'"],
+  ["title", "TEXT"],
+  ["description", "TEXT"],
+]) {
+  try {
+    db.exec(`ALTER TABLE files ADD COLUMN ${column[0]} ${column[1]}`);
+  } catch (error) {
+    if (!error.message.includes("duplicate column name")) throw error;
+  }
+}
 
 module.exports = db;

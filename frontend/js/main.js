@@ -1,6 +1,5 @@
 // main.js
-// Nav behaviour, hero typing effect, scroll reveals, and the Uplink
-// section's contact form + file upload (talks to the Express/SQLite API).
+// Nav behaviour, hero typing effect, scroll reveals, and public portfolio data.
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -137,114 +136,44 @@ function setStatus(el, text, state) {
   else el.removeAttribute("data-state");
 }
 
-/* ---------------------------------------------------------
-   File upload -> POST /api/upload, list -> GET /api/files
---------------------------------------------------------- */
-const dropzone = document.getElementById("dropzone");
-const fileInput = document.getElementById("file-input");
-const uploadStatus = document.getElementById("upload-status");
-const fileListEl = document.getElementById("file-list");
-
-dropzone.addEventListener("click", () => fileInput.click());
-dropzone.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    fileInput.click();
-  }
-});
-
-["dragenter", "dragover"].forEach((evt) =>
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.add("is-dragover");
-  })
-);
-["dragleave", "drop"].forEach((evt) =>
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.remove("is-dragover");
-  })
-);
-dropzone.addEventListener("drop", (e) => {
-  const file = e.dataTransfer.files?.[0];
-  if (file) uploadFile(file);
-});
-fileInput.addEventListener("change", () => {
-  const file = fileInput.files?.[0];
-  if (file) uploadFile(file);
-  fileInput.value = "";
-});
-
-async function uploadFile(file) {
-  const MAX = 15 * 1024 * 1024;
-  if (file.size > MAX) {
-    setStatus(uploadStatus, "File exceeds 15MB limit.", "error");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("file", file);
-
-  setStatus(uploadStatus, `Uploading ${file.name}...`, null);
-
+async function loadPublicContent() {
   try {
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    if (!res.ok) throw new Error((await res.json()).error || "Upload failed.");
-    setStatus(uploadStatus, "File stored and logged to SQLite.", "ok");
-    loadFiles();
-  } catch (err) {
-    setStatus(uploadStatus, err.message, "error");
-  }
-}
-
-async function loadFiles() {
-  try {
-    const res = await fetch("/api/files");
+    const res = await fetch("/api/public-content");
     if (!res.ok) throw new Error("Could not load file list.");
-    const files = await res.json();
-    renderFiles(files);
-  } catch (err) {
-    // Backend may not be running yet (e.g. static preview) - fail quietly.
-    fileListEl.innerHTML = "";
+    const content = await res.json();
+    renderPublicContent(content);
+  } catch (_err) {
+    document.getElementById("public-files").innerHTML = "";
   }
 }
 
-function renderFiles(files) {
-  if (!files.length) {
-    fileListEl.innerHTML = `<p class="mono" style="color:var(--dust);font-size:0.8rem;">No files transmitted yet.</p>`;
+function renderPublicContent({ files, profileImage }) {
+  const certifications = files.filter((file) => file.category === "certification");
+  const certificationList = document.getElementById("certifications-list");
+  certificationList.innerHTML = certifications.length
+    ? certifications.map((file) => `<article class="cert"><strong>${escapeHtml(file.title || file.original_name)}</strong><span>${escapeHtml(file.description || "")}</span><a href="/uploads/${encodeURIComponent(file.stored_name)}" target="_blank" rel="noopener">view</a></article>`).join("")
+    : `<div class="cert">Certifications are being updated.</div>`;
+
+  const publicFiles = files.filter((file) => file.category !== "certification");
+  const fileListEl = document.getElementById("public-files");
+  if (!publicFiles.length) {
+    fileListEl.innerHTML = `<p class="mono" style="color:var(--dust);font-size:0.8rem;">No featured uploads yet.</p>`;
     return;
   }
-  fileListEl.innerHTML = files
+  fileListEl.innerHTML = publicFiles
     .map(
       (f) => `
-      <div class="file-item" data-id="${f.id}">
-        <span class="file-item__name" title="${escapeHtml(f.original_name)}">${escapeHtml(f.original_name)}</span>
-        <span class="file-item__meta">${formatBytes(f.size_bytes)}</span>
-        <button class="file-item__delete" data-id="${f.id}" aria-label="Delete file">delete</button>
-      </div>`
+      <article class="file-item">
+        <span><strong class="file-item__name">${escapeHtml(f.title || f.original_name)}</strong><small>${escapeHtml(f.description || "")}</small></span>
+        <span class="file-item__meta">${escapeHtml(f.category)}</span>
+      </article>`
     )
     .join("");
-
-  fileListEl.querySelectorAll(".file-item__delete").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.getAttribute("data-id");
-      try {
-        const res = await fetch(`/api/files/${id}`, { method: "DELETE" });
-        if (!res.ok) throw new Error("Delete failed.");
-        loadFiles();
-      } catch (err) {
-        setStatus(uploadStatus, err.message, "error");
-      }
-    });
-  });
-}
-
-function formatBytes(bytes) {
-  if (!bytes) return "0 B";
-  const units = ["B", "KB", "MB"];
-  let i = 0, val = bytes;
-  while (val >= 1024 && i < units.length - 1) { val /= 1024; i++; }
-  return `${val.toFixed(val < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
+  if (profileImage) {
+    const image = document.getElementById("profile-image");
+    image.src = profileImage;
+    image.classList.add("is-loaded");
+  }
 }
 
 function escapeHtml(str) {
@@ -253,4 +182,4 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-loadFiles();
+loadPublicContent();
