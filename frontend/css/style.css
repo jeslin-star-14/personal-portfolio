@@ -29,15 +29,15 @@ html { scroll-behavior: smooth; }
 .pointer {
   display: none;
   position: fixed;
-  top: -9px;
-  left: -9px;
+  top: -8px;
+  left: -8px;
   width: 18px;
   height: 18px;
   background: var(--cyan);
   clip-path: polygon(50% 0%, 61% 36%, 100% 50%, 61% 64%, 50% 100%, 39% 64%, 0% 50%, 39% 36%);
   pointer-events: none;
   z-index: 100;
-  filter: drop-shadow(0 0 5px rgba(62, 217, 199, 0.9));
+  filter: drop-shadow(0 0 4px rgba(62, 217, 199, 0.95)) drop-shadow(0 0 10px rgba(62, 217, 199, 0.55));
   animation: pointer-twinkle 1.35s ease-in-out infinite;
 }
 .pointer span {
@@ -54,8 +54,8 @@ html { scroll-behavior: smooth; }
 .has-pointer .pointer { display: block; }
 .pointer.is-hovering { background: var(--pink); filter: drop-shadow(0 0 8px rgba(255, 110, 168, 0.95)); }
 @keyframes pointer-twinkle {
-  0%, 100% { opacity: 0.62; transform: scale(0.78); }
-  50% { opacity: 1; transform: scale(1.18); }
+  0%, 100% { opacity: 0.62; filter: drop-shadow(0 0 3px rgba(62, 217, 199, 0.72)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 5px rgba(62, 217, 199, 1)) drop-shadow(0 0 12px rgba(62, 217, 199, 0.65)); }
 }
 
 body {
@@ -119,8 +119,12 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  width: 116px;
+  height: 32px;
 }
-.nav__brand .dot { color: var(--cyan); }
+.nav__brand img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: left center; }
 
 .nav__links {
   display: flex;
@@ -217,16 +221,18 @@ a { color: inherit; text-decoration: none; }
 
 .hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
 
-.hero__socials { display: flex; gap: 1.2rem; margin-bottom: 2.5rem; }
+.hero__socials { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
 .hero__socials a {
-  color: var(--dust);
+  color: var(--star);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 0.35rem;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  font-size: 0.76rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  background: rgba(16, 20, 42, 0.68);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
-.hero__socials a:hover { color: var(--cyan); border-color: var(--cyan); }
+.hero__socials a:hover { color: var(--cyan); border-color: var(--cyan); background: var(--violet-soft); transform: translateY(-2px); }
 
 .btn {
   font-family: var(--font-mono);
