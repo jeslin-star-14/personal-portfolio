@@ -158,17 +158,17 @@ function renderPublicContent({ files, profileImage }) {
   const fileListEl = document.getElementById("public-files");
   if (!publicFiles.length) {
     fileListEl.innerHTML = `<p class="mono" style="color:var(--dust);font-size:0.8rem;">No featured uploads yet.</p>`;
-    return;
-  }
-  fileListEl.innerHTML = publicFiles
-    .map(
-      (f) => `
+  } else {
+    fileListEl.innerHTML = publicFiles
+      .map(
+        (f) => `
       <article class="file-item">
         <span><strong class="file-item__name">${escapeHtml(f.title || f.original_name)}</strong><small>${escapeHtml(f.description || "")}</small></span>
         <span class="file-item__meta">${escapeHtml(f.category)}</span>
       </article>`
-    )
-    .join("");
+      )
+      .join("");
+  }
   if (profileImage) {
     const image = document.getElementById("profile-image");
     image.src = profileImage;

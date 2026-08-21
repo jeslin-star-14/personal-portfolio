@@ -14,6 +14,8 @@
 </head>
 <body>
 
+<div class="pointer" aria-hidden="true"><span></span></div>
+
 <canvas id="galaxy-canvas"></canvas>
 
 <!-- ============ NAV ============ -->
@@ -205,7 +207,7 @@
     </div>
   </section>
 
-  <!-- ============ UPLINK (contact + upload) ============ -->
+  <!-- ============ CONTACT ============ -->
   <section id="uplink" class="section">
     <p class="mono eyebrow reveal">06 // UPLINK</p>
     <h2 class="section__title reveal">Open a channel.</h2>
@@ -216,7 +218,7 @@
     <div class="uplink__grid">
       <!-- Contact form -->
       <form id="contact-form" class="panel reveal" novalidate>
-        <p class="mono panel__label">contact.transmit()</p>
+        <p class="mono panel__label">CONTACT FORM</p>
         <label class="field">
           <span>Name</span>
           <input type="text" name="name" id="c-name" required />
@@ -234,7 +236,7 @@
       </form>
 
       <div id="public-work" class="panel reveal">
-        <p class="mono panel__label">latest.transmissions()</p>
+        <p class="mono panel__label">FEATURED WORK</p>
         <div id="public-files" class="file-list" aria-live="polite"></div>
       </div>
     </div>
