@@ -11,9 +11,18 @@
   const ctx = canvas.getContext("2d");
 
   const SKILLS = [
-    "Java", "Python", "C", "C++", "React", "TypeScript",
-    "Tailwind CSS", "PostgreSQL", "MongoDB", "REST APIs",
-    "Ubuntu", "SSH", "Git",
+    ["Java", "Backend development and object-oriented systems."],
+    ["Python", "APIs, automation, data workflows, and client applications."],
+    ["C / C++", "Fundamentals, embedded logic, and performance-focused thinking."],
+    ["React", "Responsive interfaces built from reusable components."],
+    ["TypeScript", "Reliable front-end code with clearer contracts."],
+    ["Tailwind CSS", "Fast, consistent interface styling and layout systems."],
+    ["PostgreSQL", "Relational data modeling and role-based workflows."],
+    ["MongoDB", "Flexible document storage for modern applications."],
+    ["REST APIs", "Clear service boundaries connecting products end to end."],
+    ["Ubuntu", "Production environments, deployment, and server maintenance."],
+    ["SSH", "Secure remote workflows from development to deployment."],
+    ["Git", "Version control, collaboration, and dependable delivery."],
   ];
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -37,10 +46,10 @@
     const cx = width / 2;
     const cy = height / 2;
     const radiusBase = Math.min(width, height) * 0.36;
-    nodes = SKILLS.map((label, i) => {
+    nodes = SKILLS.map(([label, description], i) => {
       const a = (i / SKILLS.length) * Math.PI * 2;
       const radius = radiusBase * (0.75 + (i % 3) * 0.13);
-      return { label, a, radius, size: 3 + (i % 3) };
+      return { label, description, a, radius, size: 3 + (i % 3) };
     });
   }
 
@@ -132,6 +141,11 @@
     if (hovered !== null) {
       const p = positions[hovered];
       tooltip.textContent = nodes[hovered].label;
+      const detail = document.getElementById("skill-detail");
+      detail.querySelector(".skill-detail__eyebrow").textContent = "SKILL SELECTED";
+      detail.querySelector("strong").textContent = nodes[hovered].label;
+      detail.querySelector("p").textContent = nodes[hovered].description;
+      detail.classList.add("is-selected");
       tooltip.style.left = p.x + "px";
       tooltip.style.top = p.y + "px";
       tooltip.classList.add("is-visible");
@@ -146,6 +160,7 @@
   canvas.addEventListener("mouseleave", () => {
     hovered = null;
     tooltip.classList.remove("is-visible");
+    document.getElementById("skill-detail")?.classList.remove("is-selected");
   });
   canvas.addEventListener("touchstart", (e) => {
     const t = e.touches[0];

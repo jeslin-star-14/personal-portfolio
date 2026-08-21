@@ -148,13 +148,26 @@ async function loadPublicContent() {
 }
 
 function renderPublicContent({ files, profileImage }) {
+  const resume = files.find((file) => file.category === "resume");
+  const resumeLink = document.getElementById("resume-link");
+  if (resume) {
+    resumeLink.href = `/uploads/${encodeURIComponent(resume.stored_name)}`;
+    resumeLink.hidden = false;
+  }
+
   const certifications = files.filter((file) => file.category === "certification");
   const certificationList = document.getElementById("certifications-list");
   certificationList.innerHTML = certifications.length
-    ? certifications.map((file) => `<article class="cert"><strong>${escapeHtml(file.title || file.original_name)}</strong><span>${escapeHtml(file.description || "")}</span><a href="/uploads/${encodeURIComponent(file.stored_name)}" target="_blank" rel="noopener">view</a></article>`).join("")
+    ? certifications.map((file) => {
+      const url = `/uploads/${encodeURIComponent(file.stored_name)}`;
+      const preview = file.mime_type?.startsWith("image/")
+        ? `<img src="${url}" alt="${escapeHtml(file.title || file.original_name)} certificate preview">`
+        : `<iframe src="${url}#toolbar=0&navpanes=0" title="${escapeHtml(file.title || file.original_name)} certificate preview"></iframe>`;
+      return `<article class="cert"><a class="cert__preview" href="${url}" target="_blank" rel="noopener">${preview}<span class="cert__open">Open certificate ↗</span></a><div class="cert__body"><strong>${escapeHtml(file.title || file.original_name)}</strong><span>${escapeHtml(file.description || "")}</span></div></article>`;
+    }).join("")
     : `<div class="cert">Certifications are being updated.</div>`;
 
-  const publicFiles = files.filter((file) => file.category !== "certification");
+  const publicFiles = files.filter((file) => !["certification", "resume"].includes(file.category));
   const fileListEl = document.getElementById("public-files");
   if (!publicFiles.length) {
     fileListEl.innerHTML = `<p class="mono" style="color:var(--dust);font-size:0.8rem;">No featured uploads yet.</p>`;

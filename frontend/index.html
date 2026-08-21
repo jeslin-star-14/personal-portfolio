@@ -30,6 +30,7 @@
     <a href="#experience" data-nav>Experience</a>
     <a href="#projects" data-nav>Projects</a>
     <a href="#certifications" data-nav>Certifications</a>
+    <a href="#" id="resume-link" class="nav__resume" data-nav hidden target="_blank" rel="noopener">Resume</a>
     <a href="#uplink" class="nav__cta" data-nav>Uplink</a>
   </nav>
 </header>
@@ -38,23 +39,29 @@
 
   <!-- ============ HERO ============ -->
   <section id="hero" class="hero">
-    <div class="hero__profile reveal"><img id="profile-image" alt="Jeslin J. P." /></div>
-    <p class="mono eyebrow reveal">SYSTEM ONLINE // COORDINATES: CHENNAI, IN</p>
-    <h1 class="hero__title reveal">
-      Jeslin J. P.
-    </h1>
-    <p class="hero__role mono reveal">
-      <span id="typed-role">Full Stack Developer</span><span class="cursor">&nbsp;</span>
-    </p>
-    <p class="hero__lede reveal">
-      Building responsive web &amp; mobile applications, database-driven systems and
-      real-world client software — from a blank requirements doc to a live,
-      SSH-deployed server.
-    </p>
-    <div class="hero__actions reveal">
-      <a href="#projects" class="btn btn--primary">View projects</a>
-      <a href="#uplink" class="btn btn--ghost">Send a transmission</a>
+    <div class="hero__content">
+      <p class="mono eyebrow reveal">SYSTEM ONLINE // COORDINATES: CHENNAI, IN</p>
+      <h1 class="hero__title reveal">
+        Jeslin J. P.
+      </h1>
+      <p class="hero__role mono reveal">
+        <span id="typed-role">Full Stack Developer</span><span class="cursor">&nbsp;</span>
+      </p>
+      <p class="hero__lede reveal">
+        Building responsive web &amp; mobile applications, database-driven systems and
+        real-world client software — from a blank requirements doc to a live,
+        SSH-deployed server.
+      </p>
+      <div class="hero__actions reveal">
+        <a href="#projects" class="btn btn--primary">View projects</a>
+        <a href="#uplink" class="btn btn--ghost">Send a transmission</a>
+      </div>
+      <div class="hero__socials reveal" aria-label="Social profiles">
+        <a href="https://github.com/jeslin-star-14" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+        <a href="https://linkedin.com/in/jeslin-jp-9652b8371" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
+    <div class="hero__profile reveal"><img id="profile-image" alt="Jeslin J. P." /></div>
     <div class="hero__scroll mono">scroll <span>↓</span></div>
   </section>
 
@@ -103,6 +110,11 @@
     <div class="constellation-wrap reveal">
       <canvas id="constellation-canvas"></canvas>
       <div id="constellation-tooltip" class="constellation-tooltip"></div>
+    </div>
+    <div id="skill-detail" class="skill-detail reveal" aria-live="polite">
+      <span class="mono skill-detail__eyebrow">SELECT A SKILL</span>
+      <strong>Explore the toolkit</strong>
+      <p>Hover or tap a node to see how it fits into my development workflow.</p>
     </div>
   </section>
 
