@@ -35,6 +35,7 @@ jeslin-portfolio/
 You need [Node.js](https://nodejs.org) 18+ installed.
 
 ```bash
+kill 24346
 cd backend
 npm install
 npm start
@@ -87,9 +88,11 @@ export ADMIN_PASSWORD=a-long-private-password
   projects, certifications, and skills (`SKILLS` array in `constellation.js`).
 - **Upload limit**: change `MAX_FILE_SIZE_MB` in `backend/server.js` (and the
   matching check in `frontend/js/main.js`).
-- **Deploying**: this is a single Node process serving both the API and the
-  static frontend, so it deploys anywhere Node runs (Render, Railway, a
-  Ubuntu VM over SSH, etc.) — just run `npm install && npm start` on the server.
+- **Deploying**: `vercel.json` routes the static portfolio from `frontend/`,
+  so Vercel can serve `/` and `/admin.html`. The current Express backend uses
+  SQLite and local disk uploads, which are not persistent on Vercel serverless
+  functions. Deploy the backend on Render, Railway, or Ubuntu, or migrate the
+  database and uploads to managed services before connecting it to Vercel.
 
 ## Notes
 
