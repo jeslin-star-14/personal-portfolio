@@ -1,0 +1,24 @@
+# Node.js dependencies and debug output
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Local SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# User-uploaded files
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# macOS and editor files
+.DS_Store
+.vscode/
